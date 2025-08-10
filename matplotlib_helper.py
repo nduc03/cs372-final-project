@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 
 def to_MBPS(data_size: int, seconds: float | list[float]) -> float | list[float]:
+    data_size_MB = data_size / (1024 * 1024)
     if isinstance(seconds, list):
-        return [data_size / sec for sec in seconds]
-    return data_size / seconds
+        return [data_size_MB / sec for sec in seconds]
+    return data_size_MB / seconds
 
 def plot_raw_benchmark(category_results: list[tuple[str, int, list[float]]]):
     for label, data_size, result in category_results:
