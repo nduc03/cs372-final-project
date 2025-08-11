@@ -1,4 +1,4 @@
-from Crypto.Cipher import AES, ChaCha20, DES
+from Crypto.Cipher import AES, DES
 from Crypto.Util import Counter
 from Crypto.Cipher._mode_cbc import CbcMode
 from Crypto.Cipher._mode_ctr import CtrMode

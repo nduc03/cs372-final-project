@@ -7,7 +7,7 @@ import logging
 
 logger = log_helper.get_logger(logging.INFO)
 
-TEST_SIZE_MB = 512
+TEST_SIZE_MB = 256
 
 def to_MBPS(seconds: float | list[float]) -> float | list[float]:
     if isinstance(seconds, list):
@@ -57,7 +57,7 @@ def initialize_data():
 
 
 def initialize_encrypted_data(encryptor: Callable[[bytes], bytes]):
-    return encryptor(b"\xff" * (TEST_SIZE_MB * 1024 * 1024))
+    return encryptor(b"\xff" * int(TEST_SIZE_MB * 1024 * 1024))
 
 
 def initialize_encrypted_data_hazmat_cbc(encryptor_getter: tuple[Callable[[bytes], bytes], Callable[[], bytes]]):
