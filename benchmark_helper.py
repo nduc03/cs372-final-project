@@ -1,18 +1,26 @@
-import timeit
-import log_helper
-from typing import Callable
-from Crypto.Util.Padding import pad
-from Crypto.Cipher._mode_cbc import CbcMode
-import logging
+import logging as _logging
+import timeit as _timeit
+from typing import Callable as _Callable, _NamedTuple
+from Crypto.Util.Padding import pad as _pad
+from Crypto.Cipher._mode_cbc import CbcMode as _CbcMode
+import log_helper as _log_helper
 
-logger = log_helper.get_logger(logging.INFO)
+_logger = _log_helper.get_logger(_logging.INFO)
 
-TEST_SIZE_MB = 256
+_TEST_SIZE_MIB = 512
+_BYTES_PER_MIB = 1024 * 1024
 
-def to_MBPS(seconds: float | list[float]) -> float | list[float]:
+TimeType = float
+class CipherBenchmarkResult(_NamedTuple):
+    label: str
+    data_size: int
+    exec_times: list[TimeType]
+    # mem_usages: list[int]
+
+def to_MiBPS(seconds: TimeType | list[TimeType]) -> TimeType | list[TimeType]:
     if isinstance(seconds, list):
-        return [TEST_SIZE_MB / sec for sec in seconds]
-    return TEST_SIZE_MB / seconds
+        return [_TEST_SIZE_MIB / sec for sec in seconds]
+    return _TEST_SIZE_MIB / seconds
 
 
 class CipherBenchmark:
@@ -20,12 +28,12 @@ class CipherBenchmark:
         self.label = label
         self.cipher_method = cipher_method
 
-    def benchmark(self, benchmark_data: bytes, repeat: int = 5) -> list[float]:
-        logger.info('Benchmarking "%s"...', self.label)
-        logger.info("Data size: %d bytes", len(benchmark_data))
-        bench_result = timeit.repeat(lambda: self.cipher_method(
+    def benchmark(self, benchmark_data: bytes, repeat: int = 5) -> list[TimeType]:
+        _logger.info('Benchmarking "%s"...', self.label)
+        _logger.info("Data size: %d bytes", len(benchmark_data))
+        bench_result = _timeit.repeat(lambda: self.cipher_method(
             benchmark_data), repeat=repeat, number=1)
-        logger.info('Done benchmarking "%s".', self.label)
+        _logger.info('Done benchmarking "%s".', self.label)
         return bench_result
 
 
@@ -39,7 +47,7 @@ class CipherBenchmarkCategory:
         self.test_cases.append(test)
         return self
 
-    def test(self) -> list[tuple[str, int, list[float]]]:
+    def test(self) -> list[CipherBenchmarkResult]:
         """Run all tests in this category.
 
         Returns: list of test results, each containing (label, data size, list of execution times).
@@ -53,16 +61,16 @@ class CipherBenchmarkCategory:
 
 
 def initialize_data():
-    return b"\xff" * int(TEST_SIZE_MB * 1024 * 1024)
+    return b"\xff" * int(_TEST_SIZE_MIB * _BYTES_PER_MIB)
 
 
-def initialize_encrypted_data(encryptor: Callable[[bytes], bytes]):
-    return encryptor(b"\xff" * int(TEST_SIZE_MB * 1024 * 1024))
+def init_encrypted_data(encryptor: _Callable[[bytes], bytes]):
+    return encryptor(b"\xff" * int(_TEST_SIZE_MIB * _BYTES_PER_MIB))
 
 
-def initialize_encrypted_data_hazmat_cbc(encryptor_getter: tuple[Callable[[bytes], bytes], Callable[[], bytes]]):
+def init_encrypted_data_hazmat_cbc(encryptor_getter: tuple[_Callable[[bytes], bytes], _Callable[[], bytes]]):
     update, finalize = encryptor_getter
-    return update(b"\xff" * int(TEST_SIZE_MB * 1024 * 1024)) + finalize()
+    return update(b"\xff" * int(_TEST_SIZE_MIB * _BYTES_PER_MIB)) + finalize()
 
-def initialize_encrypted_data_pycrypto_cbc(pycrypto_cbc_cipher: CbcMode):
-    return pycrypto_cbc_cipher.encrypt(pad(b"\xff" * int(TEST_SIZE_MB * 1024 * 1024), pycrypto_cbc_cipher.block_size))
+def init_encrypted_data_pycrypto_cbc(pycrypto_cbc_cipher: _CbcMode):
+    return pycrypto_cbc_cipher.encrypt(_pad(b"\xff" * int(_TEST_SIZE_MIB * _BYTES_PER_MIB), pycrypto_cbc_cipher.block_size))
