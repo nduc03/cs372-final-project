@@ -1,8 +1,8 @@
 from benchmark_helper import *
 from crypto_helper import *
-from matplotlib_helper import plot_benchmark, plot_raw_benchmark
+from matplotlib_helper import plot_benchmark, plot_raw_benchmark, plot_side_by_side_benchmark
 
-def start_benchmark(benchmark_categories_list):
+def start_benchmark(benchmark_categories_list: list[CipherBenchmarkCategory]) -> list[CipherBenchmarkResult]:
     test_result = []
     for category in benchmark_categories_list:
         print(f"Benchmarking category: {category.name}")
@@ -74,3 +74,6 @@ plot_raw_benchmark(encryption_results)
 decryption_results = start_benchmark(decryption_benchmarks)
 plot_benchmark(decryption_results, category="Decryption")
 plot_raw_benchmark(decryption_results)
+
+for encrypt_result, decrypt_result in zip(encryption_results, decryption_results):
+    plot_side_by_side_benchmark(encrypt_result, decrypt_result)
