@@ -36,6 +36,7 @@ def plot_raw_benchmark(results: list[CipherBenchmarkResult]):
         _show_value_on_top_of_bar(plt, bars)
         plt.tight_layout()
         plt.savefig(f"raw-plots/{label.replace(' ', '_')}_raw_time.png")
+        plt.close()
 
 def plot_benchmark(result: list[CipherBenchmarkResult], category: str):
     # Calculate the mean execution time for each CipherBenchmarkResult
@@ -67,6 +68,7 @@ def plot_benchmark(result: list[CipherBenchmarkResult], category: str):
     plt.legend()
     plt.tight_layout()
     plt.savefig("overall-plots/" + category + "_exec_time.png")
+    plt.close()
 
     # --- Plot throughput ---
     plt.figure(figsize=(16,9))
@@ -78,6 +80,7 @@ def plot_benchmark(result: list[CipherBenchmarkResult], category: str):
     plt.legend()
     plt.tight_layout()
     plt.savefig("overall-plots/" + category + "_throughput.png")
+    plt.close()
 
 
 def plot_side_by_side_benchmark(encrypt_result: CipherBenchmarkResult, decrypt_result: CipherBenchmarkResult):
@@ -106,3 +109,4 @@ def plot_side_by_side_benchmark(encrypt_result: CipherBenchmarkResult, decrypt_r
 
     plt.tight_layout()
     plt.savefig(f"side-by-side-plots/{encrypt_result.label.replace(' ', '_')}_encrypt_and_decrypt.png")
+    plt.close()
