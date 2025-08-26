@@ -43,28 +43,28 @@ decryption_benchmarks = [
     # Decryption
     # AES-128
     CipherBenchmarkCategory("AES decryption key 128", lambda: init_encrypted_data(get_openssl_aes_encryptor(KEY_128)))
-        .add_test(CipherBenchmark("PyCryptodome AES-CTR-128", get_pycrypto_aes_cipher(KEY_128, aesni=False).decrypt))
-        .add_test(CipherBenchmark("OpenSSL (hwaccel) AES-CTR-128", get_openssl_aes_decryptor(KEY_128))),
+        .add_test(CipherBenchmark("PyCryptodome AES-CTR-128 dec", get_pycrypto_aes_cipher(KEY_128, aesni=False).decrypt))
+        .add_test(CipherBenchmark("OpenSSL (hwaccel) AES-CTR-128 dec", get_openssl_aes_decryptor(KEY_128))),
     # AES-256
     CipherBenchmarkCategory("AES decryption key 256", lambda: init_encrypted_data(get_openssl_aes_encryptor(KEY_256)))
-        .add_test(CipherBenchmark("PyCryptodome AES-CTR-256", get_pycrypto_aes_cipher(KEY_256, aesni=False).decrypt))
-        .add_test(CipherBenchmark("OpenSSL (hwaccel) AES-CTR-256", get_openssl_aes_decryptor(KEY_256))),
+        .add_test(CipherBenchmark("PyCryptodome AES-CTR-256 dec", get_pycrypto_aes_cipher(KEY_256, aesni=False).decrypt))
+        .add_test(CipherBenchmark("OpenSSL (hwaccel) AES-CTR-256 dec", get_openssl_aes_decryptor(KEY_256))),
 
     # ChaCha20
     CipherBenchmarkCategory("ChaCha20 decryption", lambda: init_encrypted_data(get_openssl_chacha20_encryptor()))
-        .add_test(CipherBenchmark("OpenSSL ChaCha20", get_openssl_chacha20_decryptor())),
+        .add_test(CipherBenchmark("OpenSSL ChaCha20 dec", get_openssl_chacha20_decryptor())),
 
     # Blowfish
     CipherBenchmarkCategory("Blowfish decryption", lambda: init_encrypted_data_hazmat_cbc(get_openssl_blowfish_encryptor_and_padder()))
-        .add_test(CipherBenchmark("OpenSSL Blowfish-CBC", get_openssl_blowfish_decryptor_and_unpadder()[0])),
+        .add_test(CipherBenchmark("OpenSSL Blowfish-CBC dec", get_openssl_blowfish_decryptor_and_unpadder()[0])),
 
     # 3DES
     CipherBenchmarkCategory("3DES decryption", lambda: init_encrypted_data_hazmat_cbc(get_openssl_3des_encryptor_and_padder()))
-        .add_test(CipherBenchmark("OpenSSL 3DES-CBC", get_openssl_3des_decryptor_and_unpadder()[0])),
+        .add_test(CipherBenchmark("OpenSSL 3DES-CBC dec", get_openssl_3des_decryptor_and_unpadder()[0])),
 
     # DES
     CipherBenchmarkCategory("DES decryption", lambda: init_encrypted_data_pycrypto_cbc(get_pycrypto_des_cipher()))
-        .add_test(CipherBenchmark("PyCryptodome DES-CBC", get_pycrypto_des_cipher().decrypt)),
+        .add_test(CipherBenchmark("PyCryptodome DES-CBC dec", get_pycrypto_des_cipher().decrypt)),
 ]
 
 encryption_results = start_benchmark(encryption_benchmarks)
